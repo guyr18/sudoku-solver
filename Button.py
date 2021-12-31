@@ -14,6 +14,8 @@ class Button:
         self.padding = padding
         self.drawn = False
         self.custom = False
+        self.hovered = False
+        self.selected = False
 
     def draw(self, useCustomShape=False, plotFunc=None):
         self.surface.fill(self.fillColor)

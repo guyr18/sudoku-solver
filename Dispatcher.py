@@ -128,7 +128,6 @@ class Dispatcher:
     """
     def dispatch(self, objRenderer):
             if objRenderer.actionCode == objRenderer.codes["ACTION_SOLVE"]:
-                self.solve()
                 objRenderer.updateBoard(self.board)
                 objRenderer.render()
                 objRenderer.actionCode = objRenderer.codes["ACTION_DISABLE_ALL"]
