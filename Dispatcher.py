@@ -120,14 +120,3 @@ class Dispatcher:
                 print(str(item.val) + " ", end="")
                 if j == self.cols - 1:
                     print("\n")
-
-    """
-    Dispatch() dispatches a different action on the basis of evaluating the Renderer instance property, 'actionCode'.
-    Action codes are derived from a fixed Dictionary object that is constructed in main.py. The following are
-    all valid action codes:
-    """
-    def dispatch(self, objRenderer):
-            if objRenderer.actionCode == objRenderer.codes["ACTION_SOLVE"]:
-                objRenderer.updateBoard(self.board)
-                objRenderer.render()
-                objRenderer.actionCode = objRenderer.codes["ACTION_DISABLE_ALL"]

@@ -30,11 +30,12 @@ class GridScreen(Screen):
 
         # Generate a board from difficulty selected on start screen and cache that information.
         gen = BoardGenerator()
+        print(self.util.inherited["difficulty"])
         board, dispatcher = gen.generate(n=9, difficulty=self.util.inherited["difficulty"])
         self.dispatcher = dispatcher
         self.board = board
 
-        # Compute the number of empty cells there at the start.
+        # Compute the number of empty cells there are at the start.
         for a in range(self.dispatcher.rows):
             for b in range(self.dispatcher.cols):
                 if self.dispatcher.board[a][b].val == 0:

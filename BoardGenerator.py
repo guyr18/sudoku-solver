@@ -1,5 +1,6 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 from random import randint
+import random
 from Dispatcher import Dispatcher
 from Cell import Cell
 
@@ -9,6 +10,7 @@ class BoardGenerator:
         self.DIFF_EASY = "-e"
         self.DIFF_NORMAL = "-n"
         self.DIFF_HARD = "-h"
+        self.minsCellPerDiff = {self.DIFF_EASY: 51, self.DIFF_NORMAL: 34, self.DIFF_HARD: 17}
 
     """
     GetDifficulties() returns a list of valid difficulty strings.
@@ -26,84 +28,118 @@ class BoardGenerator:
                 isFixed = board[i][j] != 0
                 board[i][j] = Cell(i, j, board[i][j], isFixed)
 
+    
     """
-    Sync_dispatcher_and_board(dsp, board, x, y, z) ensures that the 2D board array and the
-    2D board array that is associated with the relative Dispatcher object, 'dsp', are
-    both in sync. 
+    GetRandomCellPositions(minCells, n) returns a list of random 2D positions as tuples. The cardinality of this
+    list is equivalent to parameter minCells. Each position is unique.
     """
-    def sync_dispatcher_and_board(self, dsp, board, x, y, z):
-        board[x][y].fixed = True
-        board[x][y].val = z
-        dsp.board = board
 
-    """
-    FindValidNumber(start, end, row, col, dsp) finds a valid number between the interval => [start, end]
-    on the specified row, 'row', and column 'col'. If such a number exists, we return it. Otherwise,
-    we return -1.
-    """
-    def findValidNumber(self, start, end, row, col, dsp):
-        for x in range(start, end + 1):
-            success = dsp.validateAttempt(row, col, x)[0]
-            if success == True:
-                return x
-        return -1
+    def getRandomCellPositions(self, minCells, n):
+        count = 0
+        data = {}
 
-    """
-    GetDifficultyStringAsInteger(d) returns a corresponding integer that can be map to each difficulty level.
-    If an unknown difficulty, d, is provided, this algorithm assumes a normal difficulty.
-    """
-    def getDifficultyStringAsInteger(self, d):
-        if d == self.DIFF_EASY:
-            return 1
-        elif d == self.DIFF_NORMAL:
-            return 2
-        elif d == self.DIFF_HARD:
-            return 3
-        else:
-            return 2
+        # Loop from 0 to minCells.
+        while count < minCells:
 
-    """
-    Generate(n, difficulty) generates and returns a sudoku puzzle (2D array) of difficulty, 'difficulty'.
-    If 'difficulty' is set to None, we assign it the 'DIFF_NORMAL' difficulty.
-    """
+            # Get random integer for row position.
+            row = randint(0, n - 1)
+
+            # Get random integer for column position.
+            col = randint(0, n - 1)
+
+            # Build key string.
+            temp = str(row) + "-" + str(col)
+
+            # Check if it is in our Dictionary object, if it is not make a key for it
+            # and increment count.
+            if temp not in data:
+                data[temp] = (row, col)
+                count += 1
+
+        # Convert each key into a valid tuple association and append it into a new list.
+        # Then return it.
+        record = []
+        for key in data:
+            dataAsTuple = (int(key[0]), int(key[2]))
+            record.append(dataAsTuple)
+        return record
+
     def generate(self, n, difficulty=None):
-        result = []
+
+        # Create a 2D array of zeroes that has dimensions n x n.
+        solved = [[0] * n for _ in range(n)]
+
+        # Using set comprehension, we create a list of values
+        # from 1 to 9. Then, we shuffle them by type-casting to
+        # a list object.
+        validNumbers = list({x for x in range(1, n + 1)})
+        random.shuffle(validNumbers)
+
+        # We iterate through the shuffled values and assign each to a cell
+        # within the first row.
         for i in range(n):
-            result.append([])
-            for j in range(n):
-                result[i].append(0)
-        self.cellulize(result, n)
-        objDispatcher = Dispatcher(result)
+            solved[0][i] = validNumbers[i]
 
-        # Loop across each row
-        for x in range(n):
-            # Loop across each column
-            for y in range(n):
+        # Shift the values in each row, in a [3, 3, 1, 3, 3, 1, 3, 3] pattern.
+        for row in range(1, n):
+            numShift = 1 if row % 3 == 0 else 3
+            start = 0
 
-                # Produce a random integer between two intervals: [0, intDiff] where
-                # intDiff is the integer associated with the difficulty, d.
-                # Harder difficulties get a larger value, thus making it less
-                # likely that a random integer is equal to it. Subsequently, it
-                # would be less likely that a cell is set as well.
-                intDiff = self.getDifficultyStringAsInteger(difficulty)
-                prob = randint(0, intDiff)
-                if prob == intDiff:
-                    r = self.findValidNumber(1, n, x, y, objDispatcher)
-                    if r != -1:
-                        self.curFixedCells += 1
-                        self.sync_dispatcher_and_board(objDispatcher, result, x, y, r)
+            while start < n:
+                solved[row][start] = solved[row - 1][start - numShift]
+                start += 1
 
-        # Check if this board is valid, if it isn't, generate a new one.
-        if objDispatcher.solve() == False:
-            print("Invalid board!")
-            return self.generate(n, difficulty)
-        else:
-            print("Valid board!")
-            solved = deepcopy(result)
-            for a in range(n):
-                for b in range(n):
-                    if objDispatcher.board[a][b].fixed == False:
-                        objDispatcher.board[a][b].val = 0
-            return solved, objDispatcher
+        # Convert each value to a corresponding Cell instance that the Dispatcher
+        # object can work with.
+        self.cellulize(solved, n)
+        cloneSolved = deepcopy(solved)
+
+        # Associate it with a Dispatcher object and return the result and dispatcher.
+        dispatcher = Dispatcher(cloneSolved)
+
+        # Compute the number of cells we need to remove.
+        difficultyKey = self.DIFF_NORMAL if difficulty == None else difficulty
+        minCells = (n ** 2) - self.minsCellPerDiff[difficultyKey]
+
+        # Obtain a random list of cells.
+        randomCells = self.getRandomCellPositions(minCells, n)
+        start = 0
+        copyDispatcher = Dispatcher(deepcopy(cloneSolved))
+
+        # Loop from 0 to minCells.
+        while start < minCells:
+
+            # We maintain two Dispatcher objects: The copy dispatcher allows us to check if
+            # there exists a solution, but when we do this check, internally we attempt
+            # to find a solution and update the board. By maintaining two, we can revert
+            # back to the previoius state when needed. Additionally, we skip this position
+            # and go to the next as we couldn't use it.
+            if copyDispatcher.solve() == False:
+                copyDispatcher.board = dispatcher.board
+                copyDispatcher.board[row][col].fixed = True
+                dispatcher.board[row][col].fixed = True
+                solved[row][col].fixed = True
+                start += 1
+                continue
+
+            # This block implies that our solution is currently valid. We pick the
+            # coordinates at the current start index and update that position to
+            # a value of zero. 
+            row = randomCells[start][0]
+            col = randomCells[start][1]
+            dispatcher.board[row][col].val = 0
+            dispatcher.board[row][col].fixed = False
+            copyDispatcher.board[row][col].val = 0
+            copyDispatcher.board[row][col].fixed = False
+            solved[row][col].fixed = False
+            start += 1
+        
+        return solved, dispatcher
+            
+
+
+        
+
+
 
 

@@ -1,6 +1,5 @@
 from Screens import Screens
 import os
-import pygame
 
 colors = [("DARKRED", 162, 0, 0), ("DARKBLUE", 0, 100, 185), ("GRAY2", 240, 240, 240), ("BORDER_GRAY", 100, 100, 100), ("LIGHT_GRAY", 190, 190, 190), ("GRAY_SHADE", 170, 170, 170), ("GREEN", 0, 255, 0), ("BLACK", 0, 0, 0), ("WHITE", 255, 255, 255), ("GRAY", 230, 230, 230), ("BLUE", 0, 162, 237), ("LIGHTBLUE", 41, 187, 255), ("RED", 199, 62, 29), ("LIGHTRED", 255, 88, 85)]
 codes = [("IDLE", -1), ("ACTION_SOLVE", 0), ("ACTION_REFRESH", 1), ("ACTION_DISABLE_ALL", 2), ("ACTION_SELECT", 3), ("ACTION_KEYPRESS", 4)]

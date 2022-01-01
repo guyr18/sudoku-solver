@@ -80,12 +80,12 @@ class StartScreen(Screen):
                     if len(btns) > 0:
                         # Difficulty button
                         if btns[0].text in self.difficultyLabels:
+                            self.util.inherited["difficulty"] = "-" + btns[0].text[0].lower()
                             self.curDifficulty = btns[0]
                             self.handleClick = True
                             self.update()
                         # The new board button was clicked; we need to render a new screen.
                         else:
-                            self.util.inherited["difficulty"] = "-" + btns[0].text[0].lower()
                             if self.util.GRID == None:
                                 self.util.GRID = GridScreen((640, 480), self.util.data["paths"], self.util.data["colors"], self.util.data["codes"], self.util.START.display)   
                                 self.util.GRID.setUtil(self.util.START.util)
