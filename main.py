@@ -10,7 +10,15 @@ Build_path_with_cwd(paths) concatenates the current working directory with
 each path in paths and returns the new list.
 """
 def build_path_with_cwd(paths):
-    return [os.getcwd() + path for path in paths]
+    temp = os.getcwd()
+    search = temp.split("/")
+    n = len(search)
+    temp = temp if search[n - 1] != "sudoku-solver" else search[0:n-1]
+
+    if type(temp) == list:
+        str = "/"
+        temp = str.join(temp)
+    return [temp + path for path in paths]
 
 """
 Build_color_dictionary(colors) converts the list of color tuples into a corresponding 
