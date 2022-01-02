@@ -89,6 +89,10 @@ The algorithm consists of several steps which I will attempt to explain:
      a valid solution for the puzzle at some state **z**. If no solution exists for state **z**, then we revert our change, and continue
      to the next position in the list. 
 
+Step (3) is the computationally, most expensive step. It requires that all entries of the last n - 1 rows are shifted by either 1 or 3. 
+Therefore, we must mutate the row in-place and this yields a precise time complexity of **O(n-1<sup>2</sup>)**. Following common reduction to lower
+order terms we get **O(n<sup>2</sup>)**. In the case of Sudoku, this means we will always have a run-time complexity of **O(81)**; considering n = 9.
+
 The .generate() method returns two values: The first is the solved, cellulized board and the second is the **Dispatcher** object associated with the
 generation process. The .board property within the **Dispatcher** object represents the board in an unsolved state. It is present with zeroed values.
 
