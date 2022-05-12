@@ -2,9 +2,15 @@
 **Sudoku Solver** is an educational project with two goals:
   - Solving any valid Sudoku puzzle.
   - Dynamic generation of valid Sudoku puzzles.
+
+
+
+https://user-images.githubusercontent.com/46636441/167991266-6741c201-a94d-4c00-b4a7-949bc94ac215.mp4
+
+
   
 # Running Sudoku Solver
-In order to run **Sudoku Solver* you will need to install **Python 3.8** or higher on your local machine.
+In order to run **Sudoku Solver** you will need to install **Python 3.8** or higher on your local machine.
 Secondly, you will need to install **PyGame** as it is the graphical dependency used for this project.
 You can do so as follows:
 ```
