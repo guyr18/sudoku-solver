@@ -245,6 +245,7 @@ class GridScreen(Screen):
               row = self.cellToProcess.row + 1
               col = self.cellToProcess.col + 1
               btn[0].text = "Cell selected on row " + str(row) + ", column " + str(col)
+
               self.cellToProcess.toggleSelect()
               self.cellToProcess.draw()
               
@@ -253,8 +254,8 @@ class GridScreen(Screen):
                 self.selectedCell.toggleSelect()
                 if self.selectedCell.success == False:
                     self.selectedCell.draw()
-                else:
-                    self.dispatcher.board[self.selectedCell.row][self.selectedCell.col].updateValue(0)
+                # this line is running when it s5hould not be.
+                #self.dispatcher.board[self.selectedCell.row][self.selectedCell.col].updateValue(0)
                     
             btn[0].draw(useCustomShape=True, plotFunc=self.plotHeaderShape(btn[0]))
             self.selectedCell = self.cellToProcess
@@ -274,7 +275,9 @@ class GridScreen(Screen):
             fillToUse = self.colors["GRAY"]
             textToUse = self.colors["RED"]
             bSuccess = False
+            print("offset:" + str(offset))
             if self.dispatcher.validateAttempt(row - 1, col - 1, offset)[0] == True:
+                print("VALID")
                 self.selectionsMade += 1
                 self.selectedCell.success = True
                 self.selectedCell.toggleSelect()
@@ -283,8 +286,11 @@ class GridScreen(Screen):
                 textToUse = self.colors["WHITE"]
                 self.dispatcher.board[row - 1][col - 1].updateValue(offset)
                 self.actionCode = self.codes["IDLE"]
+                print([[x.val for x in c] for c in self.dispatcher.board])
+
             else:
                 self.selectedCell.success = False
+                print("NOT VALID")
             higherSurface.fill(fillToUse)
             kpRender = kpFont.render(str(offset), True, textToUse)
             self.display.blit(higherSurface, pos)
