@@ -3,6 +3,9 @@
   - Solving any valid Sudoku puzzle.
   - Dynamic generation of valid Sudoku puzzles.
 
+<img src="https://user-images.githubusercontent.com/46636441/183276182-2204f215-290c-475b-aaf4-4450f7d6d5d1.png" width="500" />
+<img src="https://user-images.githubusercontent.com/46636441/183276188-53427a5b-1b30-4ed8-bbee-d520825ccd36.png" width="500" />
+<img src="https://user-images.githubusercontent.com/46636441/183276191-de4de932-fb6a-44be-bc5a-6705723078bf.png" width="500" />
 
 
 https://user-images.githubusercontent.com/46636441/167991266-6741c201-a94d-4c00-b4a7-949bc94ac215.mp4
